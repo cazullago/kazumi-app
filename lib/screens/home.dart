@@ -46,46 +46,106 @@ class _HomeScreenState extends State<HomeScreen> {
         const SizedBox(height: 16),
         const StoreShortcut(),
         const SizedBox(height: 20),
-        const PixelText('Recommended creators', size: 18),
+        const PixelText('Recommended for you', size: 18),
         const SizedBox(height: 10),
         SizedBox(
-          height: 270,
+          height: 330,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             itemCount: recommended.length,
             separatorBuilder: (_, _) => const SizedBox(width: 12),
             itemBuilder: (context, i) {
               final c = recommended[i];
+              final following = state.isFollowing(c.id);
               return SizedBox(
-                width: 160,
-                child: PixelCard(
+                width: 212,
+                child: InkWell(
                   onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => CreatorProfileScreen(creator: c))),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      AnimatedAvatar(style: c.style, size: 72, pendant: c.id == 'mikachan', animate: false),
-                      const SizedBox(height: 6),
-                      Text(c.name, style: const TextStyle(fontWeight: FontWeight.w800), overflow: TextOverflow.ellipsis),
-                      Text(c.category, style: const TextStyle(fontSize: 12, color: KazumiColors.inkSoft)),
-                      if (c.isLive)
-                        Container(
-                          margin: const EdgeInsets.only(top: 4),
-                          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
-                          decoration: BoxDecoration(color: Colors.red, borderRadius: BorderRadius.circular(6)),
-                          child: const Text('LIVE', style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w800)),
+                  borderRadius: BorderRadius.circular(18),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(18),
+                      border: Border.all(color: KazumiColors.lavender, width: 2),
+                      boxShadow: const [BoxShadow(color: Color(0x22000000), blurRadius: 0, offset: Offset(3, 3))],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        // Artwork fills the card — no empty white space.
+                        Expanded(
+                          child: ClipRRect(
+                            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                            child: Stack(
+                              fit: StackFit.expand,
+                              children: [
+                                Image.asset(
+                                  c.portrait,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stack) => Container(color: KazumiColors.lavender),
+                                ),
+                                Positioned(
+                                  left: 8,
+                                  top: 8,
+                                  child: Row(
+                                    children: [
+                                      if (c.isLive)
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                          decoration: BoxDecoration(color: Colors.red, borderRadius: BorderRadius.circular(6)),
+                                          child: const Text('LIVE', style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w900)),
+                                        ),
+                                      const SizedBox(width: 6),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                        decoration: BoxDecoration(color: Colors.black54, borderRadius: BorderRadius.circular(6)),
+                                        child: Text(c.category, style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w700)),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Positioned(
+                                  left: 0,
+                                  right: 0,
+                                  bottom: 0,
+                                  child: Container(
+                                    padding: const EdgeInsets.fromLTRB(10, 18, 10, 8),
+                                    decoration: const BoxDecoration(
+                                      gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.transparent, Colors.black54]),
+                                    ),
+                                    child: Text(
+                                      c.name,
+                                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 17, shadows: [Shadow(color: Colors.black54, blurRadius: 4)]),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
-                      const SizedBox(height: 6),
-                      SizedBox(
-                        width: double.infinity,
-                        child: AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 300),
-                          transitionBuilder: (child, anim) => FadeTransition(opacity: anim, child: child),
-                          child: state.isFollowing(c.id)
-                              ? OutlinedButton(key: const ValueKey('f'), onPressed: () => state.toggleFollow(c.id), child: const Text('Following ✓'))
-                              : FilledButton(key: const ValueKey('u'), onPressed: () => state.toggleFollow(c.id), child: const Text('Follow')),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('${c.category} · ${c.followers} followers', style: const TextStyle(fontSize: 12, color: KazumiColors.inkSoft)),
+                              Text('Demo viewers: ~${demoViewers(c.id)} (demo data)', style: const TextStyle(fontSize: 11, color: KazumiColors.inkSoft)),
+                              const SizedBox(height: 8),
+                              SizedBox(
+                                width: double.infinity,
+                                child: AnimatedSwitcher(
+                                  duration: const Duration(milliseconds: 300),
+                                  transitionBuilder: (child, anim) => FadeTransition(opacity: anim, child: child),
+                                  child: following
+                                      ? OutlinedButton(key: const ValueKey('f'), onPressed: () => state.toggleFollow(c.id), child: const Text('Following ✓'))
+                                      : FilledButton(key: const ValueKey('u'), onPressed: () => state.toggleFollow(c.id), child: const Text('Follow')),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               );
@@ -98,26 +158,41 @@ class _HomeScreenState extends State<HomeScreen> {
         if (followed.isEmpty)
           const PixelCard(child: Text('You are not following anyone yet. Tap Follow on a creator above and they will appear here.'))
         else
-          ...followed.map((c) => Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: PixelCard(
+          SizedBox(
+            height: 118,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              itemCount: followed.length,
+              separatorBuilder: (_, _) => const SizedBox(width: 14),
+              itemBuilder: (context, i) {
+                final c = followed[i];
+                return InkWell(
                   onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => CreatorProfileScreen(creator: c))),
-                  child: Row(
-                    children: [
-                      AnimatedAvatar(style: c.style, size: 56, animate: false),
-                      const SizedBox(width: 12),
-                      Expanded(child: Text(c.name, style: const TextStyle(fontWeight: FontWeight.w800))),
-                      if (c.isLive)
-                        TextButton(
-                          onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => WatchScreen(creator: c))),
-                          child: const Text('Watch LIVE'),
-                        )
-                      else
-                        const Text('Offline', style: TextStyle(color: KazumiColors.inkSoft)),
-                    ],
+                  child: SizedBox(
+                    width: 76,
+                    child: Column(
+                      children: [
+                        Stack(
+                          children: [
+                            ClipOval(child: Image.asset(c.portrait, width: 72, height: 72, fit: BoxFit.cover, errorBuilder: (context, error, stack) => Container(width: 72, height: 72, color: KazumiColors.lavender))),
+                            if (c.isLive)
+                              Positioned(
+                                right: 0,
+                                bottom: 0,
+                                child: Container(padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1), decoration: BoxDecoration(color: Colors.red, borderRadius: BorderRadius.circular(6)), child: const Text('LIVE', style: TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.w900))),
+                              ),
+                          ],
+                        ),
+                        const SizedBox(height: 6),
+                        Text(c.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 13)),
+                        Text(c.category, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 11, color: KazumiColors.inkSoft)),
+                      ],
+                    ),
                   ),
-                ),
-              )),
+                );
+              },
+            ),
+          ),
         const SizedBox(height: 20),
         const PixelText('Live right now', size: 18),
         const SizedBox(height: 10),
@@ -127,7 +202,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => WatchScreen(creator: c))),
                 child: Row(
                   children: [
-                    AnimatedAvatar(style: c.style, size: 56, pendant: c.id == 'mikachan', animate: false),
+                    portraitThumb(c.portrait, 64, 64, radius: 32),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Column(

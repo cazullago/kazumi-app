@@ -230,7 +230,7 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen> with Single
             PixelCard(
               child: Column(
                 children: [
-                  AnimatedAvatar(style: c.style, size: 150, tilt: 0.15, pendant: c.id == 'mikachan'),
+                  AnimatedAvatar(style: c.style, portraitAsset: c.portrait, size: 150, tilt: 0.15, pendant: c.id == 'mikachan'),
                   const SizedBox(height: 8),
                   Text(c.name, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 20)),
                   Text(c.handle, style: const TextStyle(color: KazumiColors.inkSoft)),

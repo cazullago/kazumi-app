@@ -1,7 +1,7 @@
 name: kazumi
 description: Kazumi — cute pixel-lofi anime VTuber livestreaming and social app (local-only v1).
 publish_to: "none"
-version: 1.0.0+1
+version: 1.0.1+2
 
 environment:
   sdk: ^3.13.4
@@ -22,3 +22,6 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/portraits/
+    - assets/rooms/

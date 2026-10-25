@@ -78,6 +78,8 @@ class Creator {
   final bool isLive;
   final AvatarStyle style;
   final String room;
+  /// Illustrated Genshin-style portrait asset — never a drawn blob.
+  final String portrait;
   const Creator({
     required this.id,
     required this.name,
@@ -88,6 +90,7 @@ class Creator {
     required this.isLive,
     required this.style,
     required this.room,
+    required this.portrait,
   });
 }
 
@@ -102,6 +105,7 @@ const demoCreators = <Creator>[
     isLive: true,
     style: mikaStyle,
     room: 'My Room',
+    portrait: 'assets/portraits/mikachan.jpg',
   ),
   Creator(
     id: 'sakura',
@@ -113,17 +117,19 @@ const demoCreators = <Creator>[
     isLive: true,
     style: AvatarStyle(hairStyle: 'Twin Tails', hairColor: Color(0xFFFFB7D5), eyeColor: Color(0xFFEC4899), outfit: 'Star Dress', accessory: 'Star Halo'),
     room: 'My Room',
+    portrait: 'assets/portraits/sakurapixel.jpg',
   ),
   Creator(
     id: 'luna',
-    name: 'LunaLoFi',
-    handle: '@lunalofi',
+    name: 'Luna',
+    handle: '@luna',
     bio: 'Midnight lofi radio, study with me.',
     followers: 96100,
     category: 'Music',
     isLive: false,
     style: AvatarStyle(hairStyle: 'Long Wavy', hairColor: Color(0xFF8EA8E8), eyeColor: Color(0xFF3B82F6), outfit: 'Cozy Sweater', accessory: 'None'),
     room: 'My Room',
+    portrait: 'assets/portraits/luna.jpg',
   ),
   Creator(
     id: 'kiko',
@@ -135,6 +141,7 @@ const demoCreators = <Creator>[
     isLive: true,
     style: AvatarStyle(hairStyle: 'Short Bob', hairColor: Color(0xFF7ED6A5), eyeColor: Color(0xFF059669), outfit: 'Gaming Tee', accessory: 'Cat Ears'),
     room: 'Gaming',
+    portrait: 'assets/portraits/kiko.jpg',
   ),
   Creator(
     id: 'mochi',
@@ -146,6 +153,7 @@ const demoCreators = <Creator>[
     isLive: false,
     style: AvatarStyle(hairStyle: 'Ponytail', hairColor: Color(0xFFFFD166), eyeColor: Color(0xFFB45309), outfit: 'Cozy Sweater', accessory: 'Star Halo'),
     room: 'My Room',
+    portrait: 'assets/portraits/mochi.jpg',
   ),
   Creator(
     id: 'ren',
@@ -157,6 +165,43 @@ const demoCreators = <Creator>[
     isLive: false,
     style: AvatarStyle(hairStyle: 'Long Wavy', hairColor: Color(0xFFE8E8E8), eyeColor: Color(0xFF7C6BD9), outfit: 'Star Dress', accessory: 'Angel Wings'),
     room: 'My Room',
+    portrait: 'assets/portraits/ren.jpg',
+  ),
+  Creator(
+    id: 'rin',
+    name: 'Rin',
+    handle: '@rin',
+    bio: 'Chill vocals and lofi covers every night.',
+    followers: 73400,
+    category: 'Music',
+    isLive: true,
+    style: AvatarStyle(hairStyle: 'Short Bob', hairColor: Color(0xFFD8B8F0), eyeColor: Color(0xFF7C6BD9), outfit: 'Lofi Hoodie', accessory: 'None'),
+    room: 'My Room',
+    portrait: 'assets/portraits/rin.jpg',
+  ),
+  Creator(
+    id: 'kaito',
+    name: 'Kaito',
+    handle: '@kaito',
+    bio: 'Cozy games, late-night streams, good vibes only.',
+    followers: 61200,
+    category: 'Gaming',
+    isLive: true,
+    style: AvatarStyle(hairStyle: 'Short Bob', hairColor: Color(0xFF5FB8C9), eyeColor: Color(0xFF0E7490), outfit: 'Gaming Tee', accessory: 'None'),
+    room: 'Gaming',
+    portrait: 'assets/portraits/kaito.jpg',
+  ),
+  Creator(
+    id: 'sora',
+    name: 'Sora',
+    handle: '@sora',
+    bio: 'Sunny just-chatting streams and room tours.',
+    followers: 49800,
+    category: 'Just Chatting',
+    isLive: false,
+    style: AvatarStyle(hairStyle: 'Long Wavy', hairColor: Color(0xFFFFD166), eyeColor: Color(0xFFB45309), outfit: 'Star Dress', accessory: 'Star Halo'),
+    room: 'My Room',
+    portrait: 'assets/portraits/sora.jpg',
   ),
 ];
 

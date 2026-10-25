@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:kazumi/avatar.dart';
 import 'package:kazumi/models.dart';
 import 'package:kazumi/screens/live.dart';
 import 'package:kazumi/screens/messages.dart';
@@ -122,6 +123,16 @@ void main() {
     await tester.pump(const Duration(milliseconds: 200));
     expect(state.isFollowing('mikachan'), isTrue);
     expect(find.widgetWithText(OutlinedButton, 'Following ✓'), findsWidgets);
+  });
+
+  test('All creators have illustrated portraits (v1.0.1, no blob avatars)', () {
+    expect(demoCreators.length, greaterThanOrEqualTo(9));
+    for (final c in demoCreators) {
+      expect(c.portrait, startsWith('assets/portraits/'));
+      expect(c.portrait, endsWith('.jpg'));
+    }
+    expect(portraitForStyle(mikaStyle), 'assets/portraits/mikachan.jpg');
+    expect(portraitForStyle(const AvatarStyle(hairStyle: 'Twin Tails')), 'assets/portraits/sakurapixel.jpg');
   });
 
   testWidgets('Live discovery labels demo viewers, never as real', (tester) async {

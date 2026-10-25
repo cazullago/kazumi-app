@@ -65,7 +65,7 @@ class _LiveDiscoveryScreenState extends State<LiveDiscoveryScreen> {
                 onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => WatchScreen(creator: c))),
                 child: Row(
                   children: [
-                    AnimatedAvatar(style: c.style, size: 72, pendant: c.id == 'mikachan', animate: false),
+                    AnimatedAvatar(style: c.style, portraitAsset: c.portrait, size: 72, pendant: c.id == 'mikachan', animate: false),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Column(
@@ -152,7 +152,7 @@ class _WatchScreenState extends State<WatchScreen> {
                       const SizedBox(height: 10),
                       Row(
                         children: [
-                          AnimatedAvatar(style: c.style, size: 52, pendant: c.id == 'mikachan', animate: false),
+                          AnimatedAvatar(style: c.style, portraitAsset: c.portrait, size: 52, pendant: c.id == 'mikachan', animate: false),
                           const SizedBox(width: 10),
                           Expanded(
                             child: Column(
@@ -325,7 +325,7 @@ class _OfflineView extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            AnimatedAvatar(style: creator.style, size: 130, animate: false),
+            AnimatedAvatar(style: creator.style, portraitAsset: creator.portrait, size: 130, animate: false),
             const SizedBox(height: 12),
             const PixelText('Currently offline', size: 20),
             Text('${creator.name} is not live right now.', style: const TextStyle(color: KazumiColors.inkSoft)),

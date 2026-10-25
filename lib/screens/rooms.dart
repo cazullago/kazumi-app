@@ -4,7 +4,7 @@ import '../avatar.dart';
 import '../models.dart';
 import '../theme.dart';
 
-/// Cozy pixel-lofi bedroom drawn with containers (no heavy assets).
+/// Cozy pixel-lofi bedroom: real illustrated room art behind the avatar.
 class PixelBedroom extends StatelessWidget {
   final AvatarStyle style;
   final double avatarSize;
@@ -16,68 +16,30 @@ class PixelBedroom extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        gradient: const LinearGradient(colors: [Color(0xFFE9DCFF), Color(0xFFFFE4EE)], begin: Alignment.topCenter, end: Alignment.bottomCenter),
         border: Border.all(color: KazumiColors.lavender, width: 2),
         borderRadius: BorderRadius.circular(18),
       ),
-      child: Stack(
-        children: [
-          // Window with pixel stars.
-          Positioned(
-            left: 16,
-            top: 14,
-            child: Container(
-              width: 86,
-              height: 86,
-              decoration: BoxDecoration(color: const Color(0xFF2B2350), border: Border.all(color: Colors.white, width: 3), borderRadius: BorderRadius.circular(10)),
-              child: const Stack(
-                children: [
-                  Positioned(left: 10, top: 12, child: Text('✦', style: TextStyle(color: Colors.white, fontSize: 14))),
-                  Positioned(right: 14, top: 26, child: Text('✧', style: TextStyle(color: Color(0xFFFFD166), fontSize: 16))),
-                  Positioned(left: 22, bottom: 14, child: Text('★', style: TextStyle(color: Colors.white, fontSize: 12))),
-                  Positioned(right: 10, bottom: 10, child: Text('🌙', style: TextStyle(fontSize: 18))),
-                ],
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: Image.asset(
+                'assets/rooms/room_lofi.jpg',
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stack) => Container(color: const Color(0xFFE9DCFF)),
               ),
             ),
-          ),
-          // Shelf with pixel items.
-          Positioned(
-            right: 16,
-            top: 22,
-            child: Column(
-              children: [
-                const Row(children: [Text('📚', style: TextStyle(fontSize: 20)), SizedBox(width: 4), Text('🪴', style: TextStyle(fontSize: 20)), SizedBox(width: 4), Text('🎧', style: TextStyle(fontSize: 20))]),
-                Container(width: 110, height: 6, color: const Color(0xFF8B6F4E)),
-              ],
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 22),
+                child: AnimatedAvatar(style: style, size: avatarSize, tilt: tilt, pendant: pendant, mouthLevel: mouthLevel),
+              ),
             ),
-          ),
-          // Rug.
-          Positioned(
-            left: 24,
-            right: 24,
-            bottom: 14,
-            child: Container(height: 18, decoration: BoxDecoration(color: KazumiColors.pink.withValues(alpha: 0.6), borderRadius: BorderRadius.circular(20))),
-          ),
-          // Bed (left) and avatar (centre).
-          Positioned(
-            left: 10,
-            bottom: 34,
-            child: Container(
-              width: 78,
-              height: 52,
-              decoration: BoxDecoration(color: Colors.white, border: Border.all(color: KazumiColors.lavender, width: 2), borderRadius: BorderRadius.circular(12)),
-              child: const Center(child: Text('🛏️', style: TextStyle(fontSize: 26))),
-            ),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 22),
-              child: AnimatedAvatar(style: style, size: avatarSize, tilt: tilt, pendant: pendant, mouthLevel: mouthLevel),
-            ),
-          ),
-          const Positioned(right: 12, bottom: 10, child: Text('♪ lofi beats ♪', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: KazumiColors.inkSoft))),
-        ],
+            const Positioned(right: 12, bottom: 10, child: Text('♪ lofi beats ♪', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.white, shadows: [Shadow(color: Colors.black54, blurRadius: 4)]))),
+          ],
+        ),
       ),
     );
   }

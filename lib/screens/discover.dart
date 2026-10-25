@@ -55,7 +55,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                 onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => CreatorProfileScreen(creator: c))),
                 child: Row(
                   children: [
-                    AnimatedAvatar(style: c.style, size: 64, pendant: c.id == 'mikachan', animate: false),
+                    AnimatedAvatar(style: c.style, portraitAsset: c.portrait, size: 64, pendant: c.id == 'mikachan', animate: false),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Column(
