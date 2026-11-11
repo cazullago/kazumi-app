@@ -8,8 +8,9 @@ import '../theme.dart';
 import 'rooms.dart';
 import 'store.dart';
 
-/// LIVE Studio: choose room, title/category, privacy, preview, mic test,
-/// avatar position/size, Start/End Live.
+/// LIVE Studio: preview is the hero — large full-screen stage first,
+/// setup below. The mic test visibly drives the new painted mouth in
+/// real time, and expression buttons change mouth + eye shape.
 ///
 /// Honesty: this is a LOCAL PREVIEW ONLY — not a real broadcast.
 /// Live transport (LiveKit/WebRTC) is not connected in v1. Camera/mic are
@@ -27,6 +28,7 @@ class _StudioScreenState extends State<StudioScreen> {
   double _avatarSize = 88;
   double _overlayX = 1;
   double _tilt = 0.15;
+  LiveExpression _expression = LiveExpression.normal;
   bool _live = false;
   bool _cameraGranted = false;
   final _titleCtrl = TextEditingController(text: 'Cozy pixel-lofi night');
@@ -63,18 +65,35 @@ class _StudioScreenState extends State<StudioScreen> {
               ),
             ),
             const SizedBox(height: 14),
-            // Preview stage cross-fades between rooms, never snaps.
+            // Preview hero — large stage first, cross-fades between rooms.
             AnimatedSwitcher(
               duration: const Duration(milliseconds: 400),
               switchInCurve: Curves.easeOutCubic,
               switchOutCurve: Curves.easeInCubic,
               transitionBuilder: (child, anim) => FadeTransition(opacity: anim, child: ScaleTransition(scale: Tween<double>(begin: 0.97, end: 1).animate(anim), child: child)),
-              child: SizedBox(
+              child: Stack(
                 key: ValueKey(_room),
-                height: 300,
-                child: _room == 'Gaming'
-                    ? GamingStage(style: state.userStyle, avatarSize: _avatarSize, overlayX: _overlayX, mouthLevel: _mic.level)
-                    : PixelBedroom(style: state.userStyle, avatarSize: 180, tilt: _tilt, mouthLevel: _mic.level),
+                children: [
+                  SizedBox(
+                    height: 480,
+                    width: double.infinity,
+                    child: _room == 'Gaming'
+                        ? GamingStage(style: state.userStyle, avatarSize: _avatarSize, overlayX: _overlayX, mouthLevel: _mic.level, expression: _expression)
+                        : PixelBedroom(style: state.userStyle, tilt: _tilt, mouthLevel: _mic.level, expression: _expression),
+                  ),
+                  if (_live)
+                    const Positioned(
+                      top: 12,
+                      left: 12,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(color: Colors.red, borderRadius: BorderRadius.all(Radius.circular(8))),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+                          child: Text('● PREVIEW LIVE', style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w800)),
+                        ),
+                      ),
+                    ),
+                ],
               ),
             ),
             const SizedBox(height: 8),
@@ -82,6 +101,19 @@ class _StudioScreenState extends State<StudioScreen> {
               const DemoLabel('PREVIEW LIVE (local only) — nobody else can see this.')
             else
               const Text('Preview is idle. Start Live below to enter local preview mode.', style: TextStyle(color: KazumiColors.inkSoft, fontSize: 13)),
+            const SizedBox(height: 14),
+            const PixelText('Expression', size: 18),
+            const SizedBox(height: 6),
+            const Text('Changes the mouth and eye shape on the preview above — try it while the mic test is running.', style: TextStyle(fontSize: 12, color: KazumiColors.inkSoft)),
+            const SizedBox(height: 8),
+            Row(
+              children: LiveExpression.values.map((e) {
+                return Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: PixelChip(label: e.label, selected: _expression == e, onTap: () => setState(() => _expression = e)),
+                );
+              }).toList(),
+            ),
             const SizedBox(height: 14),
             const PixelText('Stream setup', size: 18),
             const SizedBox(height: 8),
@@ -159,7 +191,7 @@ class _StudioScreenState extends State<StudioScreen> {
                 children: [
                   const PixelText('Mic level test', size: 16),
                   const Text(
-                    'Your mouth above moves with your REAL mic volume, smoothed so it opens proportionally and closes gently when you stop. No random mouth loop, no fake audio.',
+                    'Your mouth in the preview above moves with your REAL mic volume, smoothed so it opens proportionally and closes gently when you stop. No random mouth loop, no fake audio. Switch expression above to see the mouth shape change.',
                     style: TextStyle(fontSize: 12, color: KazumiColors.inkSoft),
                   ),
                   const SizedBox(height: 8),
